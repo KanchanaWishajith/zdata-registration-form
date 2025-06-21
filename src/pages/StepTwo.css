@@ -36,6 +36,7 @@
   font-weight: 500;
   color: #1e40af;
   margin-bottom: 6px;
+  display: block;
 }
 
 .input-group {
@@ -79,7 +80,12 @@
   margin-top: 8px;
 }
 
-.step-button:hover {
+.step-button:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.step-button:hover:not(:disabled) {
   background: #2563eb;
 }
 

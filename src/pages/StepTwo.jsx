@@ -7,6 +7,7 @@ export default function StepTwo() {
   const { formData, setFormData } = useForm();
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const errs = {};
@@ -18,14 +19,22 @@ export default function StepTwo() {
   };
 
   const handleSubmit = async () => {
+    setMessage('');
     const errs = validate();
-    if (Object.keys(errs).length) return setErrors(errs);
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
 
     try {
       await registerUser(formData);
       setMessage('Registration successful!');
     } catch (err) {
-      setMessage('Registration failed.');
+      setMessage('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,6 +53,7 @@ export default function StepTwo() {
             onChange={e =>
               setFormData({ ...formData, password: e.target.value })
             }
+            disabled={loading}
           />
         </div>
         {errors.password && <div className="error-text">{errors.password}</div>}
@@ -57,14 +67,19 @@ export default function StepTwo() {
             onChange={e =>
               setFormData({ ...formData, confirmPassword: e.target.value })
             }
+            disabled={loading}
           />
         </div>
         {errors.confirmPassword && (
           <div className="error-text">{errors.confirmPassword}</div>
         )}
 
-        <button className="step-button" onClick={handleSubmit}>
-          Submit Registration
+        <button
+          className="step-button"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : 'Submit Registration'}
         </button>
 
         {message && <div className="message-text">{message}</div>}
